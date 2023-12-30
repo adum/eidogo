@@ -150,12 +150,16 @@ if (!Array.prototype.some)
   };
 }
 
-Array.from = function(it) {
-    var arr = [];
-    for (var i = 0; i < it.length; i++) {
-        arr[i] = it[i];
+if (!Array.from)
+{
+    // re-declaring this method causes a bug in stimulus and it silently stops working.
+    Array.from = function(it) {
+        var arr = [];
+        for (var i = 0; i < it.length; i++) {
+            arr[i] = it[i];
+        }
+        return arr;
     }
-    return arr;
 }
 
 Function.prototype.bind = function($thisObj) {

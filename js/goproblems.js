@@ -102,6 +102,32 @@ go.problems.Player.prototype = {
       this.callback = callback;
     }
 
+    let autosize = false;
+
+    if (configuration.stoneSize === 'auto') {
+      autosize = true;
+
+      let winFixer = 0;
+
+      if (window.outerWidth <= 600) {
+        let lastStep = 6;
+
+        for (let i = 600 - window.outerWidth; i > 0; i -= 100) {
+          lastStep += 1.2;
+        }
+
+        winFixer = window.outerWidth / 100 * lastStep;
+      }
+
+      console.log(winFixer);
+
+      configuration.stoneSize = (window.outerWidth - winFixer) * 0.0445;
+
+      if (configuration.stoneSize > 35) {
+        configuration.stoneSize = 35;
+      }
+    }
+
     this.validateConfiguration();
 
     this.cfg = {
@@ -184,6 +210,15 @@ go.problems.Player.prototype = {
     }
 
     this.player.loadSgf(this.cfg, this.onSgfLoaded.bind(this));
+
+    if (autosize) {
+      setTimeout(function () {
+        if (window.outerWidth <= 430) {
+          $('[id^=controls-container-]').width($('[id^=board-container-]').width());
+          $('[id^=comments-]').width($('[id^=board-container-]').width());
+        }
+      }, 1000);
+    }
   },
 
   onSgfLoaded: function () {
