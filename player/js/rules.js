@@ -80,6 +80,14 @@ eidogo.Rules.prototype = {
      * @returns true if it has a liberty
      */
     findCaptures: function(pt, color) {
+        // Some problems have "ghost paths" in the comment data -- clicking them leads to an
+        // exception in this function because `pt.x`/`pt.y` are NaN or undefined. The below check
+        // is a temporary workaround for this.
+        // XXX: The underlying errors in the backend data still needs to be tracked down and sanitized...
+        if (typeof pt.x == "undefined" || typeof pt.y == "undefined" || Number.isNaN(pt.x) || Number.isNaN(pt.y)) {
+            console.log("Invalid data fed to Eidogo:", pt, color);
+            return false;
+        }
         // out of bounds?
         if (pt.x < 0 || pt.y < 0 ||
             pt.x >= this.board.boardSize || pt.y >= this.board.boardSize)
